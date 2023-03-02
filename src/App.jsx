@@ -1,7 +1,9 @@
+import Xterm from "./Xterm"
+
 function App() {
   return (
     <div className="App">
-      <h1>Hello World</h1>
+      <Xterm />
     </div>
   )
 }
