@@ -1,9 +1,9 @@
-import Xterm from "./Xterm"
+import WebTerm from "./WebTerm"
 
 function App() {
   return (
     <div className="App">
-      <Xterm />
+      <WebTerm />
     </div>
   )
 }
