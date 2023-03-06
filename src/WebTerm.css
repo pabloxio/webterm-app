@@ -34,6 +34,7 @@
 /**
  *  Default styles for xterm.js
  */
+@import url('https://raw.githubusercontent.com/ryanoasis/powerline-extra-symbols/master/patched-fonts/DroidSansMonoForPowerlinePlusNerdFileTypesMono.otf');
 
 .xterm {
     cursor: text;
