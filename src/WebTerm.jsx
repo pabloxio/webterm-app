@@ -1,22 +1,13 @@
 import { useEffect, useRef, useState } from "react"
-import { Terminal } from "xterm";
-import useWebSocket, { ReadyState } from 'react-use-websocket';
+import { Terminal } from "xterm"
+import useWebSocket, { ReadyState } from 'react-use-websocket'
 
-import "./WebTerm.css"
+import "xterm/css/xterm.css"
 
 function WebTerm() {
-  const [term,] = useState(new Terminal({
-    screenKeys: true,
-    useStyle: true,
-    cursorBlink: true,
-    fullscreenWin: true,
-    maximizeWin: true,
-    screenReaderMode: true,
-    cols: 128,
-  }))
-
+  const [term,] = useState(new Terminal())
   const terminalElement = useRef(null)
-  const { sendMessage, lastMessage, readyState, getWebSocket } = useWebSocket("ws://localhost:8000", { share: true });
+  const { sendMessage, lastMessage, readyState, getWebSocket } = useWebSocket("ws://localhost:8000", { share: true })
 
   useEffect(() => {
     switch (readyState) {
