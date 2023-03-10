@@ -1,49 +1,32 @@
 import { useEffect, useRef, useState } from "react"
 import { Terminal } from "xterm"
-import useWebSocket, { ReadyState } from 'react-use-websocket'
 
 import "xterm/css/xterm.css"
+import useWebTerm from "./hooks/useWebTerm"
 
 function WebTerm() {
   const [term,] = useState(new Terminal())
   const terminalElement = useRef(null)
-  const { sendMessage, lastMessage, readyState, getWebSocket } = useWebSocket("ws://localhost:8000", { share: true })
+  const { sendMessage, lastMessage } = useWebTerm()
 
   useEffect(() => {
-    switch (readyState) {
-      case ReadyState.OPEN:
-        console.log("Connected")
-        if (getWebSocket().binaryType === "blob") {
-          getWebSocket().binaryType = 'arraybuffer';
-        }
+    if (terminalElement.current && !term._initialized) {
+      term.open(terminalElement.current)
+      term.focus()
+      term._initialized = true
 
-        if (terminalElement.current && !term._initialized) {
-          term.open(terminalElement.current)
-          term.focus()
-          term._initialized = true
-          term.onData(function(data) {
-            sendMessage(new TextEncoder().encode("\x00" + data))
-          })
-        }
-
-        if (lastMessage !== null) {
-          if (lastMessage.data instanceof ArrayBuffer) {
-            let message = String.fromCharCode.apply(null, new Uint8Array(lastMessage.data));
-            term.write(message)
-          }
-        }
-
-        break
-
-      case ReadyState.CLOSED:
-        term.write("Session terminated");
-        break
-
-      case ReadyState.CONNECTING:
-        console.log("Conneting...")
-        break
+      term.onData(function(data) {
+        sendMessage(new TextEncoder().encode("\x00" + data))
+      })
     }
-  }, [readyState, lastMessage])
+  }, [terminalElement])
+
+  useEffect(() => {
+    if (lastMessage !== null && lastMessage.data instanceof ArrayBuffer) {
+      let message = String.fromCharCode.apply(null, new Uint8Array(lastMessage.data));
+      term.write(message)
+    }
+  }, [lastMessage])
 
   return <div className="xterm" ref={terminalElement}></div>
 }
